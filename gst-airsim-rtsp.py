@@ -107,17 +107,17 @@ if __name__ == "__main__":
                     caps=image/png,width={img.width},height={img.height}
                     format=GST_FORMAT_TIME
                     block=true
-                ! decodebin ! video/x-raw
+                ! pngdec 
+                ! videorate
+                ! videoconvert ! video/x-raw,framerate=10/1
+                ! identity name=probe_{idx}
                 ! queue
-                ! videoconvert 
-                ! queue
-                ! x264enc tune=zerolatency key-int-max=1
-                ! queue
+                ! x264enc tune=zerolatency 
                 ! rtspclientsink
                     payloader=_pay_{idx}
                     location=rtsp://0.0.0.0:8554/cam{val}
-                    protocols=tcp
-                    latency=0 sync=0 async=0
+                    protocols=udp
+                    latency=0 sync=1 async=0
                 rtph264pay name=_pay_{idx}
         """
     # ! xvimagesink sync=0 async=0

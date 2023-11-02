@@ -57,7 +57,9 @@ def on_need_data_cb (appsrc, length, u_data):
             _responses = _api_update_fn()
 
     buffer = Gst.Buffer.new_wrapped(img.image_data_uint8)
-    _pts += _duration
+    # This is divided by 4 to compensate for the quadruple stream, makes stream way smoother
+    # Reimplement properly TODO
+    _pts += _duration // 4 
     buffer.pts = _pts
     buffer.duration = _duration
 

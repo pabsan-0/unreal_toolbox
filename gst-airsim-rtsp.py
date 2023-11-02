@@ -46,10 +46,12 @@ def on_need_data_cb (appsrc, length, u_data):
 
     camera_id = u_data
     with _mutex:
-        png_image = client.simGetImage(camera_id, airsim.ImageType.Scene)
-        png_bytes = airsim.string_to_uint8_array(png_image)
+        raw = client.simGetImage(camera_id, airsim.ImageType.Scene)
+        # png = cv2.imdecode(airsim.string_to_uint8_array(raw), cv2.IMREAD_UNCHANGED)
+        # buf = cv2.imencode(".png", png)[1].tobytes()
+        buf = airsim.string_to_uint8_array(raw)
     
-    buffer = Gst.Buffer.new_wrapped(png_bytes)
+    buffer = Gst.Buffer.new_wrapped(buf)
     _pts += _duration
     buffer.pts = _pts
     buffer.duration = _duration
@@ -109,15 +111,16 @@ if __name__ == "__main__":
                 ! queue
                 ! videoconvert 
                 ! queue
-                ! x264enc tune=zerolatency
+                ! x264enc tune=zerolatency key-int-max=1
                 ! queue
                 ! rtspclientsink
                     payloader=_pay_{idx}
-                    location=rtsp://127.0.0.1:8554/cam{val}
-                    protocols=udp
-                    latency=0 sync=1 async=0
+                    location=rtsp://0.0.0.0:8554/cam{val}
+                    protocols=tcp
+                    latency=0 sync=0 async=0
                 rtph264pay name=_pay_{idx}
-            """
+        """
+    # ! xvimagesink sync=0 async=0
     print(pipe_desc)
 
     # Parsing and setting stuff up

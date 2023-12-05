@@ -1,4 +1,4 @@
-__unreal_engine_path="/home/catec/UnrealEngine/"
+__unreal_engine_path="/home/catec/UnrealEngine/" # TUNE ME
 
 
 # Launches an instance of Unreal Engine Editor pointing to a particular project, 
@@ -11,7 +11,7 @@ __unreal_engine_path="/home/catec/UnrealEngine/"
 UE4Editor () {
     local target="$1"
     local target="$(readlink -f "$target")" 
-    local editor="$__unreal_engine_path/Engine/Binaries/Linux/UE4Editor" # TUNE ME
+    local editor="$__unreal_engine_path/Engine/Binaries/Linux/UE4Editor" 
 
     # If no argument, simply run the editor
     if [ -z "$1" ]; then
